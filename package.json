@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "prismjs": "^1.21.0",
-    "vue": "^2.5.17"
+    "swiper": "^5.4.5",
+    "vue": "^2.5.17",
+    "vue-awesome-swiper": "^4.1.1",
+    "weixin-js-sdk": "^1.6.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.1.0",

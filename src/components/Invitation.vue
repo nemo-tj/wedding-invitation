@@ -1,81 +1,144 @@
 <template>
-  <div class="wedding-invitation" :class="{ 'invitation-bounce':canOpen }">
-    <div class="invitation-container" :class="{ 'invitation-down':isOpening }">
-      <div class="invitation-cover">
-        <div class="cover-content" :class="{'invitation-up':isOpening}">
-          <div class="content-inside">
-            <img class="content-inside-photo" src="../images/photo.png">
-            <p>我们结婚啦！</p>
-            <p><b>秦宇杰 & 金姝妮</b></p>
-            <p>时间：2020年10月5日</p>
-            <p>地点：<b>江苏省江阴市银河国际酒店</b></p>
-            <div class="content-inside-bless">
-              <input
-                placeholder="输入祝福" 
-                @keyup.enter="sendBarrage"
-                @focus="isFocused = true"
-                @blur="isFocused = false, hasEntered = false"
-                v-model="wish"
-                ref="wishInput"
-              >
-              <p v-if="!wish && isFocused && hasEntered">有什么想对我们说吗</p>
-              <div>
-                <button @click="sendBarrage">发送弹幕biubiubiu</button>
-                <button @click="closeInvitation">关闭</button>
-              </div>
+    <div class="wedding-invitation" :class="{ 'invitation-bounce':canOpen }" ref="fatherInvitation">
+        <div class="invitation-container" :class="{ 'invitation-down':isOpening }">
+            <div class="invitation-cover">
+                <div class="cover-content" :class="{'invitation-up':isOpening}">
+                    <div class="content-inside">
+
+                        <!-- <img class="content-inside-photo swiper-slide" src="../images/photo.png"/>
+                        <img class="content-inside-photo swiper-slide" src="../images/photo.jpg"/> -->
+
+                        <swiper ref="mySwiper" :options="swiperOptions">
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-1 swiper-slide"></div>
+                                <!-- <img class="content-inside-photo swiper-slide" src="../images/photo.png"/> -->
+                            </swiper-slide>
+
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-2 swiper-slide">
+                                    <button class="navigation-button">点击导航</button>
+                                </div>
+                            </swiper-slide>
+
+                            <!-- <div class="swiper-pagination" slot="pagination"></div> -->
+                            <div class="swiper-button-prev" slot="button-prev"></div>
+                            <div class="swiper-button-next" slot="button-next"></div>
+                        </swiper>
+                        <p>我们结婚啦！</p>
+                        <p>
+                            <b>秦宇杰 & 金姝妮</b>
+                        </p>
+                        <p>时间：2020年10月5日</p>
+                        <p>
+                            地点：
+                            <b>江苏省江阴市银河国际酒店</b>
+                        </p>
+                        <div class="content-inside-bless">
+                            <input
+                                placeholder="输入祝福"
+                                @keyup.enter="sendBarrage"
+                                @focus="isFocused = true"
+                                @blur="isFocused = false, hasEntered = false"
+                                v-model="wish"
+                                ref="wishInput"
+                            />
+                            <p v-if="!wish && isFocused && hasEntered">有什么想对我们说吗</p>
+                            <div>
+                                <button @click="sendBarrage">发送弹幕biubiubiu</button>
+                                <button @click="closeInvitation">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cover-inside-left" :class="{'opening':isOpening}"></div>
+                <div class="cover-inside-right" :class="{'opening':isOpening}"></div>
+                <img
+                    class="cover-inside-seal"
+                    src="../images/seal.png"
+                    @click="openInvitation"
+                    :class="{'invitation-flight':isOpening}"
+                />
             </div>
-          </div>
         </div>
-        <div class="cover-inside-left" :class="{'opening':isOpening}"></div>
-        <div class="cover-inside-right" :class="{'opening':isOpening}"></div>
-        <img class="cover-inside-seal" src="../images/seal.png" @click="openInvitation" :class="{'invitation-flight':isOpening}">
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
+import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
+// import 'swiper/css/swiper.css'
 export default {
-  props: ['canOpen'],
-  data() {
-    return {
-      isOpening: false,
-      wish: '',
-      isFocused: false,
-      hasEntered: false
-    }
-  },
-  methods: {
-    // 打开邀请函
-    openInvitation(){
-      this.isOpening = true
+    components: {
+        Swiper,
+        SwiperSlide
     },
-    closeInvitation () {
-      this.isOpening = false
-      setTimeout(() => {
-        this.$emit('onClose')
-      }, 660)
+    directives: {
+        swiper: directive
     },
-    // 发送弹幕
-    sendBarrage(){
-      this.$nextTick(() => {
-        this.hasEntered = true
-        if (!this.wish) {
-          return
-        }
-        this.isOpening = false
-        this.$refs.wishInput.blur()
-        setTimeout(() => {
-          this.$emit('sendBarrage', this.wish)
-        }, 660)
-      })
-    }
-  }
-}
+    props: ["canOpen"],
+    data() {
+        return {
+            isOpening: false,
+            wish: "",
+            isFocused: false,
+            hasEntered: false,
+            // swiper
+            swiperOptions: {
+                spaceBetween: 30,
+                centeredSlides: true,
+                // autoplay: {
+                //     delay: 2500,
+                //     disableOnInteraction: false
+                // },
+                // loop: true,
+                navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+                },
+            }
+        };
+    },
+    computed: {
+        swiper() {
+            return this.$refs.mySwiper.$swiper
+      }
+    },
+    methods: {
+        // 打开邀请函
+        openInvitation() {
+            this.isOpening = true;
+        },
+        closeInvitation() {
+            this.isOpening = false;
+            setTimeout(() => {
+                this.$emit("onClose");
+            }, 660);
+        },
+        // 发送弹幕
+        sendBarrage() {
+            this.$nextTick(() => {
+                this.hasEntered = true;
+                if (!this.wish) {
+                    return;
+                }
+                this.isOpening = false;
+                this.$refs.wishInput.blur();
+                setTimeout(() => {
+                    this.$emit("sendBarrage", this.wish);
+                }, 660);
+            });
+        },
+    },
+    mounted() {
+        this.swiper.slideTo(3, 1000, false);
+        // 固定高度，防止键盘呼出后高度坍缩
+        this.$refs.fatherInvitation.style.height = document.documentElement.clientHeight + 'px'
+    },
+
+};
 </script>
 
 <style lang="less">
-  .wedding-invitation{
+.wedding-invitation {
     position: fixed;
     top: 0;
     left: 0;
@@ -87,161 +150,198 @@ export default {
     transform: scale(0.05);
     -webkit-transform: scale(0.05);
     opacity: 0;
-    transition: transform 0.8s cubic-bezier(.26,1.84,.39,.61), opacity 0.5s linear;
-    -webkit-transition: -webkit-transform 0.8s cubic-bezier(.26,1.84,.39,.61), opacity 0.5s linear;
+    transition: transform 0.8s cubic-bezier(0.26, 1.84, 0.39, 0.61),
+        opacity 0.5s linear;
+    -webkit-transition: -webkit-transform 0.8s
+            cubic-bezier(0.26, 1.84, 0.39, 0.61),
+        opacity 0.5s linear;
     background-size: 100%;
     overflow: hidden;
-    &.invitation-bounce{
-      opacity: 1;
-      transform: scale(1);
-      -webkit-transform: scale(1);
+    &.invitation-bounce {
+        opacity: 1;
+        transform: scale(1);
+        -webkit-transform: scale(1);
     }
-    .invitation-container{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 1, 1);
-      -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0, 1, 1);
-      &.invitation-down{
-        transform: translateY(20px);
-        -webkit-transform: translateY(20px);
-      }
-      .invitation-cover{
-        position: absolute;
-        top: 0;
-        left: 0;
+    .invitation-container {
+        position: relative;
         width: 100%;
         height: 100%;
-        background-color: #D65047;
-        border-radius: 10px;
-        perspective: 500px;
-        box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.15);
-        .cover-content{
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          padding: 10px 20px;
-          transition: transform 0.6s cubic-bezier(0.4, 0, 1, 1);
-          -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0, 1, 1);
-          &.invitation-up{
-            transform: translateY(-60px);
-            -webkit-transform: translateY(-60px);
-          }
-          .content-inside{
+        transition: transform 0.6s cubic-bezier(0.4, 0, 1, 1);
+        -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0, 1, 1);
+        &.invitation-down {
+            transform: translateY(20px);
+            -webkit-transform: translateY(20px);
+        }
+        .invitation-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            padding: 20px;
-            color: #a9895d;
-            background-color: #FFF1DE;
-            text-align: center;
-            overflow: auto;
-            .content-inside-photo{
-              width: 100%;
-              margin-bottom: 10px;
-              padding: 5px;
-              border: 1px solid #f7debb;
-            }
-            p{
-              margin-top: 0;
-              margin-bottom: 5px;
-            }
-            .content-inside-bless{
-              input{
+            background-color: #d65047;
+            border-radius: 10px;
+            perspective: 500px;
+            box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.15);
+            .cover-content {
+                position: absolute;
+                top: 0;
+                left: 0;
                 width: 100%;
-                height: 35px;
-                margin-bottom: 10px;
-                outline: none;
-                border: none;
-                border-bottom: 1px solid #f7debb;
-                color: #a9895d;
-                background: transparent;
-                &::-webkit-input-placeholder { color: #E8D1B1;font-size: 12px; }
-                &::-moz-placeholder { color: #E8D1B1;font-size: 12px; }
-                &:-ms-input-placeholder { color: #E8D1B1;font-size: 12px; }
-                &:-moz-placeholder { color: #E8D1B1;font-size: 12px; }
-              }
-              >div{
-                display: flex;
-                button{
-                  width: 100%;
-                  height: 35px;
-                  color: #a9895d;
-                  background: #f7debb;
-                  border: none;
-                  outline: none;
-                  &:disabled{
-                    opacity: 0.8;
-                  }
-                  &:first-child{
-                    margin-right: 10px;
-                    flex: 1;
-                  }
-                  &:last-child{
-                    width: 60px;
-                    border: 1px solid #f7debb;
-                    background: transparent;
-                  }
+                height: 100%;
+                padding: 10px 20px;
+                transition: transform 0.6s cubic-bezier(0.4, 0, 1, 1);
+                -webkit-transition: -webkit-transform 0.6s
+                    cubic-bezier(0.4, 0, 1, 1);
+                &.invitation-up {
+                    transform: translateY(-60px);
+                    -webkit-transform: translateY(-60px);
                 }
-              }
+                .content-inside {
+                    height: 100%;
+                    padding: 20px;
+                    color: #a9895d;
+                    background-color: #fff1de;
+                    text-align: center;
+                    overflow: auto;
+
+                    .content-inside-photo {
+                        // width: 100%;
+                        margin-bottom: 10px;
+                        padding: 5px;
+                        border: 1px solid #f7debb;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        padding-bottom: 60%;
+                        height: 0;
+                    }
+                    .photo-1 {
+                        background-image: url('../images/photo.png');
+                    }
+                    .photo-2 {
+                        background-image: url('../images/map.png');
+                        background-position: 50% 50%;
+                        position: relative;
+
+                        .navigation-button {
+                            width: 100px;
+                            position: absolute;
+                            bottom: 50px;
+                            left: calc(50% - 50px);
+                        }
+                    }
+
+                    p {
+                        margin-top: 0;
+                        margin-bottom: 5px;
+                    }
+                    .content-inside-bless {
+                        input {
+                            width: 100%;
+                            height: 35px;
+                            margin-bottom: 10px;
+                            outline: none;
+                            border: none;
+                            border-bottom: 1px solid #f7debb;
+                            color: #a9895d;
+                            background: transparent;
+                            &::-webkit-input-placeholder {
+                                color: #e8d1b1;
+                                font-size: 12px;
+                            }
+                            &::-moz-placeholder {
+                                color: #e8d1b1;
+                                font-size: 12px;
+                            }
+                            &:-ms-input-placeholder {
+                                color: #e8d1b1;
+                                font-size: 12px;
+                            }
+                            &:-moz-placeholder {
+                                color: #e8d1b1;
+                                font-size: 12px;
+                            }
+                        }
+                        > div {
+                            display: flex;
+                            button {
+                                width: 100%;
+                                height: 35px;
+                                color: #a9895d;
+                                background: #f7debb;
+                                border: none;
+                                outline: none;
+                                &:disabled {
+                                    opacity: 0.8;
+                                }
+                                &:first-child {
+                                    margin-right: 10px;
+                                    flex: 1;
+                                }
+                                &:last-child {
+                                    width: 60px;
+                                    border: 1px solid #f7debb;
+                                    background: transparent;
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
+            .cover-inside-left {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 70%;
+                height: 100%;
+                border-radius: 10px;
+                background-color: #d65047;
+                box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2);
+                z-index: 6;
+                transition: transform 0.5s;
+                -webkit-transition: -webkit-transform 0.5s;
+                transform-origin: 0 50%;
+                -webkit-transform-origin: 0 50%;
+                &.opening {
+                    transform: rotate3d(0, 1, 0, -140deg);
+                    -webkit-transform: rotate3d(0, 1, 0, -140deg);
+                }
+            }
+            .cover-inside-right {
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 40%;
+                height: 100%;
+                border-radius: 10px;
+                background-color: #d65047;
+                box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+                z-index: 5;
+                transition: transform 0.5s;
+                -webkit-transition: -webkit-transform 0.5s;
+                transform-origin: 100% 50%;
+                -webkit-transform-origin: 100% 50%;
+                &.opening {
+                    transform: rotate3d(0, 1, 0, 140deg);
+                    -webkit-transform: rotate3d(0, 1, 0, 140deg);
+                }
+            }
+            .cover-inside-seal {
+                position: absolute;
+                left: 70%;
+                bottom: 100px;
+                width: 80px;
+                height: 80px;
+                margin-left: -40px;
+                z-index: 7;
+                transform-origin: 50% 50%;
+                -webkit-transform-origin: 50% 50%;
+                transition: all 0.8s cubic-bezier(0.4, 0, 1, 1);
+                -webkit-transition: all 0.8s cubic-bezier(0.4, 0, 1, 1);
+                &.invitation-flight {
+                    opacity: 0;
+                }
+            }
         }
-        .cover-inside-left{
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 70%;
-          height: 100%;
-          border-radius: 10px;
-          background-color: #D65047;
-          box-shadow: 5px 0 10px rgba(0,0,0,0.2);
-          z-index: 6;
-          transition: transform 0.5s;
-          -webkit-transition: -webkit-transform 0.5s;
-          transform-origin: 0 50%;
-          -webkit-transform-origin: 0 50%;
-          &.opening{
-            transform: rotate3d(0,1,0,-140deg);
-            -webkit-transform: rotate3d(0,1,0,-140deg);
-          }
-        }
-        .cover-inside-right{
-          position: absolute;
-          right: 0;
-          top: 0;
-          width: 40%;
-          height: 100%;
-          border-radius: 10px;
-          background-color: #D65047;
-          box-shadow: -5px 0 10px rgba(0,0,0,0.2);
-          z-index: 5;
-          transition: transform 0.5s;
-          -webkit-transition: -webkit-transform 0.5s;
-          transform-origin: 100% 50%;
-          -webkit-transform-origin: 100% 50%;
-          &.opening{
-            transform: rotate3d(0,1,0,140deg);
-            -webkit-transform: rotate3d(0,1,0,140deg);
-          }
-        }
-        .cover-inside-seal{
-          position: absolute;
-          left: 70%;
-          bottom: 100px;
-          width: 80px;
-          height: 80px;
-          margin-left: -40px;
-          z-index: 7;
-          transform-origin: 50% 50%;
-          -webkit-transform-origin: 50% 50%;
-          transition: all 0.8s cubic-bezier(0.4, 0, 1, 1);
-          -webkit-transition: all 0.8s cubic-bezier(0.4, 0, 1, 1);
-          &.invitation-flight{
-            opacity: 0;
-          }
-        }
-      }
     }
-  }
+}
 </style>
