@@ -108,12 +108,21 @@ export default {
             })
         },
         // 发送弹幕之后
+        // 参数wish是用户发送的那一条弹幕
         onAfterSending(wish) {
-            this.wish = wish
-            this.canOpen = false
+            this.wish = wish;
+            this.canOpen = false;
             setTimeout(() => {
                 this.canStart = true
-            }, 800)
+            }, 800);
+            // 调用函数，保存留言到数据库
+            this.saveComment(wish)
+        },
+        // 保存留言到数据库
+        saveComment(arg_comment) {
+            let data = new FormData();
+            data.append('comment', arg_comment);
+            this.axios.post('http://wedding.southdog.cool/comment/', data)
         }
     }
 }

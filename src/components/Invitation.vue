@@ -85,10 +85,10 @@ export default {
             swiperOptions: {
                 spaceBetween: 30,
                 centeredSlides: true,
-                // autoplay: {
-                //     delay: 2500,
-                //     disableOnInteraction: false
-                // },
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: false
+                },
                 // loop: true,
                 navigation: {
                 nextEl: '.swiper-button-next',
@@ -211,7 +211,8 @@ export default {
                         border: 1px solid #f7debb;
                         background-repeat: no-repeat;
                         background-size: cover;
-                        padding-bottom: 60%;
+                        background-position: 50% 50%;
+                        padding-bottom: 150%;
                         height: 0;
                     }
                     .photo-1 {
