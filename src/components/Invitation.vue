@@ -16,7 +16,7 @@
 
                             <swiper-slide>
                                 <div class="content-inside-photo photo-2 swiper-slide">
-                                    <button class="navigation-button">点击导航</button>
+                                    <button class="navigation-button" @click="openMap()">点击导航</button>
                                 </div>
                             </swiper-slide>
 
@@ -27,6 +27,7 @@
                         <p>我们结婚啦！</p>
                         <p>
                             <b>秦宇杰 & 金姝妮</b>
+                            <button @click="getLocation()">获取地理位置</button>
                         </p>
                         <p>时间：2020年10月5日</p>
                         <p>
@@ -64,6 +65,7 @@
 </template>
 
 <script>
+// var wx = require('weixin-js-sdk');
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
 // import 'swiper/css/swiper.css'
 export default {
@@ -127,6 +129,29 @@ export default {
                 }, 660);
             });
         },
+        openMap() {
+            this.$wx.openLocation({
+                latitude: 31.896669, // 纬度，浮点数，范围为90 ~ -90
+                longitude: 120.313553, // 经度，浮点数，范围为180 ~ -180。
+                name: '要导航的地方在哪里🧐?', // 位置名
+                address: '江阴市银河国际酒店', // 地址详情说明
+                scale: 15, // 地图缩放级别,整形值,范围从1~28。默认为最大
+                infoUrl: '123'
+            });
+        },
+        getLocation() {
+            this.$wx.getLocation({
+            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                // var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                // var speed = res.speed; // 速度，以米/每秒计
+                // var accuracy = res.accuracy; // 位置精度
+                // eslint-disable-next-line no-console
+                console.log(latitude)
+            }
+            });
+        }
     },
     mounted() {
         this.swiper.slideTo(3, 1000, false);
