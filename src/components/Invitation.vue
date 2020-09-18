@@ -5,35 +5,29 @@
                 <div class="cover-content" :class="{'invitation-up':isOpening}">
                     <div class="content-inside">
 
-                        <!-- <img class="content-inside-photo swiper-slide" src="../images/photo.png"/>
-                        <img class="content-inside-photo swiper-slide" src="../images/photo.jpg"/> -->
-
                         <swiper ref="mySwiper" :options="swiperOptions">
                             <swiper-slide>
                                 <div class="content-inside-photo photo-1 swiper-slide"></div>
-                                <!-- <img class="content-inside-photo swiper-slide" src="../images/photo.png"/> -->
                             </swiper-slide>
 
                             <swiper-slide>
-                                <div class="content-inside-photo photo-2 swiper-slide">
-                                    <button class="navigation-button" @click="openMap()">点击导航</button>
-                                </div>
+                                <div class="content-inside-photo photo-2 swiper-slide"></div>
                             </swiper-slide>
 
-                            <!-- <div class="swiper-pagination" slot="pagination"></div> -->
-                            <div class="swiper-button-prev" slot="button-prev"></div>
-                            <div class="swiper-button-next" slot="button-next"></div>
+                            <div class="swiper-pagination" slot="pagination"></div>
+                            <!-- <div class="swiper-button-prev" slot="button-prev"></div>
+                            <div class="swiper-button-next" slot="button-next"></div> -->
                         </swiper>
                         <p>我们结婚啦！</p>
                         <p>
                             <b>秦宇杰 & 金姝妮</b>
-                            <button @click="getLocation()">获取地理位置</button>
                         </p>
                         <p>时间：2020年10月5日</p>
                         <p>
                             地点：
                             <b>江苏省江阴市银河国际酒店</b>
                         </p>
+                        <div class="navigation-button" @click="openMap()"><i class="navigation-icon"></i>点击导航</div>
                         <div class="content-inside-bless">
                             <input
                                 placeholder="输入祝福"
@@ -43,11 +37,9 @@
                                 v-model="wish"
                                 ref="wishInput"
                             />
-                            <p v-if="!wish && isFocused && hasEntered">有什么想对我们说吗</p>
-                            <div>
-                                <button @click="sendBarrage">发送弹幕biubiubiu</button>
-                                <button @click="closeInvitation">关闭</button>
-                            </div>
+
+                            <button class="send-message" @click="sendBarrage">发送</button>
+
                         </div>
                     </div>
                 </div>
@@ -65,9 +57,7 @@
 </template>
 
 <script>
-// var wx = require('weixin-js-sdk');
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
-// import 'swiper/css/swiper.css'
 export default {
     components: {
         Swiper,
@@ -87,15 +77,18 @@ export default {
             swiperOptions: {
                 spaceBetween: 30,
                 centeredSlides: true,
-                autoplay: {
-                    delay: 2500,
-                    disableOnInteraction: false
-                },
+                // autoplay: {
+                //     delay: 4000,
+                //     disableOnInteraction: false
+                // },
                 // loop: true,
-                navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+                pagination: {
+                    el: '.swiper-pagination',
                 },
+                // navigation: {
+                //     nextEl: '.swiper-button-next',
+                //     prevEl: '.swiper-button-prev',
+                // },
             }
         };
     },
@@ -228,6 +221,7 @@ export default {
                     background-color: #fff1de;
                     text-align: center;
                     overflow: auto;
+                    --swiper-navigation-color: OrangeRed;/* 单独设置前进后退按钮颜色 */
 
                     .content-inside-photo {
                         // width: 100%;
@@ -237,22 +231,44 @@ export default {
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-position: 50% 50%;
-                        padding-bottom: 150%;
+                        padding-bottom: 120%;
                         height: 0;
                     }
                     .photo-1 {
                         background-image: url('../images/photo.png');
                     }
                     .photo-2 {
-                        background-image: url('../images/map.png');
+                        background-image: url('../images/photo.jpg');
                         background-position: 50% 50%;
                         position: relative;
+                    }
 
-                        .navigation-button {
-                            width: 100px;
-                            position: absolute;
-                            bottom: 50px;
-                            left: calc(50% - 50px);
+                    // 导航按钮
+                    .navigation-button {
+                        border: 2px solid;
+                        width: 80%;
+                        height: 30px;
+                        margin: 30px auto;
+                        border-radius: 15px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        .navigation-icon {
+                            display: inline-block;
+                            width: 15px;
+                            height: 15px;
+                            margin-right: 5px;
+                            background: url('../images/navigation.png') no-repeat;
+                            background-size: cover;
+                        }
+                    }
+
+                    // swiper组件的分液器
+                    .swiper-pagination {
+                        .swiper-pagination-bullet {
+                            width: 15px;
+                            height: 15px;
                         }
                     }
 
@@ -261,6 +277,8 @@ export default {
                         margin-bottom: 5px;
                     }
                     .content-inside-bless {
+                        display: flex;
+                        
                         input {
                             width: 100%;
                             height: 35px;
@@ -287,6 +305,21 @@ export default {
                                 font-size: 12px;
                             }
                         }
+
+                        .send-message {
+                            width: 60px;
+                            height: 35px;
+                            color: #a9895d;
+                            background: #f7debb;
+                            border: none;
+                            outline: none;
+                            margin-left: 10px;
+                            &:disabled {
+                                opacity: 0.8;
+                            }
+                        }
+
+
                         > div {
                             display: flex;
                             button {
