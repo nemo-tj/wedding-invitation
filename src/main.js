@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import Vue from 'vue'
 import Wedding from './Wedding.vue'
 import VueAwesomeSwiper from 'vue-awesome-swiper'

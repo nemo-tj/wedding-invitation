@@ -2,7 +2,9 @@
 <div class="wedding-barrage" ref="barrage" :style="{opacity: canStart ? 1 : 0}">
     <div v-html="codeInStyleTag"></div>
     <p class="code barrage-0" ref="barrageFirst" :style="{transform:'translate('+initialOffset+'px)',top:'10px'}">
-        <span class="mine">{{ wish }}</span>
+        <!-- wish是自己发送的弹幕，默认wish为空，如果选择关闭邀请函只看弹幕的话，wish也是false，只有成功发送弹幕，wish才不为空 -->
+        <!-- 只有wish不为空时，mime才会显示出来。mime就是带有黄色框的、自己发送的弹幕 -->
+        <span class="mine" v-show="wish? true : false">{{ wish }}</span>
         <span v-for="(item, index) in filterBarrage(barrages, 0)" :key="index">{{ item }}</span>
     </p>
     <p class="code barrage-1" ref="barrageSecond" :style="{transform:'translate('+initialOffset+'px)',top:'40px'}">
@@ -99,7 +101,7 @@ export default {
         }
     },
     mounted() {
-        this.getComments()
+        this.getComments();
     },
 }
 </script>

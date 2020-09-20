@@ -109,14 +109,23 @@ export default {
         },
         // 发送弹幕之后
         // 参数wish是用户发送的那一条弹幕
+        // 用参数wish来判断要不要保存到数据库，如果不保存的话，就只是展示弹幕而已
         onAfterSending(wish) {
-            this.wish = wish;
-            this.canOpen = false;
-            setTimeout(() => {
-                this.canStart = true
-            }, 800);
-            // 调用函数，保存留言到数据库
-            this.saveComment(wish)
+            if (wish != null) {
+                this.wish = wish;
+                this.canOpen = false;
+                setTimeout(() => {
+                    this.canStart = true
+                }, 800);
+                // 调用函数，保存留言到数据库
+                this.saveComment(wish)
+            } else {
+                this.canOpen = false;
+                setTimeout(() => {
+                    this.canStart = true
+                }, 800);
+            }
+
         },
         // 保存留言到数据库
         saveComment(arg_comment) {

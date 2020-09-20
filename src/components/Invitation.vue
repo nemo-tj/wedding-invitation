@@ -3,9 +3,9 @@
         <div class="invitation-container" :class="{ 'invitation-down':isOpening }">
             <div class="invitation-cover">
                 <div class="cover-content" :class="{'invitation-up':isOpening}">
-                    <div class="content-inside">
+                    <div class="content-inside" ref="contentInside" id="listen-dom">
 
-                        <swiper ref="mySwiper" :options="swiperOptions">
+                        <swiper ref="mySwiper" :options="swiperOptions" id="my-swiper" :key="ifAutoplay">
                             <swiper-slide>
                                 <div class="content-inside-photo photo-1 swiper-slide"></div>
                             </swiper-slide>
@@ -13,20 +13,30 @@
                             <swiper-slide>
                                 <div class="content-inside-photo photo-2 swiper-slide"></div>
                             </swiper-slide>
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-3 swiper-slide"></div>
+                            </swiper-slide>
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-4 swiper-slide"></div>
+                            </swiper-slide>
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-5 swiper-slide"></div>
+                            </swiper-slide>
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-6 swiper-slide"></div>
+                            </swiper-slide>
+                            <swiper-slide>
+                                <div class="content-inside-photo photo-7 swiper-slide"></div>
+                            </swiper-slide>
 
                             <div class="swiper-pagination" slot="pagination"></div>
-                            <!-- <div class="swiper-button-prev" slot="button-prev"></div>
-                            <div class="swiper-button-next" slot="button-next"></div> -->
                         </swiper>
                         <p>我们结婚啦！</p>
                         <p>
                             <b>秦宇杰 & 金姝妮</b>
                         </p>
-                        <p>时间：2020年10月5日</p>
-                        <p>
-                            地点：
-                            <b>江苏省江阴市银河国际酒店</b>
-                        </p>
+                        <p>2020年10月5日 18:08</p>
+                        <p>地点：<b>江苏省江阴市银河国际酒店</b></p>
                         <div class="navigation-button" @click="openMap()"><i class="navigation-icon"></i>点击导航</div>
                         <div class="content-inside-bless">
                             <input
@@ -39,7 +49,12 @@
                             />
 
                             <button class="send-message" @click="sendBarrage">发送</button>
+                        </div>
 
+                        <button class="close-invitation" @click="closeInvitation">关闭看弹幕</button>
+
+                        <div class="scroll-guide" v-show="showGuideScroll">
+                            <div class="scroll-down-icon"></div>
                         </div>
                     </div>
                 </div>
@@ -78,34 +93,50 @@ export default {
                 spaceBetween: 30,
                 centeredSlides: true,
                 // autoplay: {
-                //     delay: 4000,
-                //     disableOnInteraction: false
+                //     delay: 2000,
+                //     disableOnInteraction: true
                 // },
-                // loop: true,
+                autoplay: false,
                 pagination: {
                     el: '.swiper-pagination',
+                    // 点击图片隐藏分页器
+                    hideOnClick :true,
+                    dynamicBullets: true,
+                    dynamicMainBullets: 1
                 },
-                // navigation: {
-                //     nextEl: '.swiper-button-next',
-                //     prevEl: '.swiper-button-prev',
-                // },
-            }
+            },
+            // 用来判断要不要显示scroll guide
+            showGuideScroll: false,
+            scrollHeight: null,
+            clientHeight: null,
+            scrollTop: null,
+            // 判断什么时候开始自动播放图片，这是一个key，改变可以可以重新渲染组件
+            ifAutoplay: false
         };
     },
     computed: {
-        swiper() {
+        swiper: function() {
             return this.$refs.mySwiper.$swiper
-      }
+        }
     },
+
     methods: {
         // 打开邀请函
         openInvitation() {
             this.isOpening = true;
+            // 修改swiper的设置，改成自动播放
+            this.swiperOptions.autoplay = {
+                delay: 2000,
+                disableOnInteraction: true
+            };
+            // 修改key值，重新渲染组件，开始自动播放
+            this.ifAutoplay = true;
         },
         closeInvitation() {
             this.isOpening = false;
             setTimeout(() => {
                 this.$emit("onClose");
+                this.$emit("sendBarrage", null);
             }, 660);
         },
         // 发送弹幕
@@ -123,35 +154,39 @@ export default {
             });
         },
         openMap() {
+            // console.log('open map');
             this.$wx.openLocation({
                 latitude: 31.896669, // 纬度，浮点数，范围为90 ~ -90
                 longitude: 120.313553, // 经度，浮点数，范围为180 ~ -180。
-                name: '要导航的地方在哪里🧐?', // 位置名
+                name: '婚宴地点', // 位置名
                 address: '江阴市银河国际酒店', // 地址详情说明
                 scale: 15, // 地图缩放级别,整形值,范围从1~28。默认为最大
-                infoUrl: '123'
             });
         },
-        getLocation() {
-            this.$wx.getLocation({
-            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-            success: function (res) {
-                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                // var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                // var speed = res.speed; // 速度，以米/每秒计
-                // var accuracy = res.accuracy; // 位置精度
-                // eslint-disable-next-line no-console
-                console.log(latitude)
+        // 在渲染页面时判断要不要引导滚动
+        ifGuideScroll() {
+            // 如果这个元素有很多是溢出的
+            if (this.$refs.contentInside.scrollHeight - this.$refs.contentInside.clientHeight > 30) {
+                return true
+            } else {
+                return false
             }
-            });
+        },
+        // 给一个方法，来主动隐藏滚动引导
+        hideGuideScroll() {
+            this.showGuideScroll = false
         }
     },
     mounted() {
-        this.swiper.slideTo(3, 1000, false);
+        // 默认从第一张开始
+        this.swiper.slideTo(0, 1000, false);
         // 固定高度，防止键盘呼出后高度坍缩
-        this.$refs.fatherInvitation.style.height = document.documentElement.clientHeight + 'px'
+        this.$refs.fatherInvitation.style.height = document.documentElement.clientHeight + 'px';
+        // 渲染页面时，调用ifGuideScroll函数判断要不要显示滚动引导
+        this.showGuideScroll = this.ifGuideScroll();
+        // 监听 id="listen-dom"，如果滚动就调用hideGuideScroll函数，用来隐藏引导
+        document.querySelector('#listen-dom').addEventListener('scroll', this.hideGuideScroll, true);
     },
-
 };
 </script>
 
@@ -222,25 +257,56 @@ export default {
                     text-align: center;
                     overflow: auto;
                     --swiper-navigation-color: OrangeRed;/* 单独设置前进后退按钮颜色 */
+                    position: relative; /* 用于给滚动引导条定位 */
 
                     .content-inside-photo {
-                        // width: 100%;
-                        margin-bottom: 10px;
+                        width: 95%;
+                        // margin-bottom: 15px;
+                        margin: 5px auto 15px auto;
                         padding: 5px;
-                        border: 1px solid #f7debb;
+                        // border: 1px solid #f7debb;
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-position: 50% 50%;
-                        padding-bottom: 120%;
+                        padding-bottom: 150%;
                         height: 0;
+                        border-radius: 8px;
+                        box-shadow: 0 3px 5px 0 rgba(0,0,0,0.3), 0px 4px 10px 0px rgba(0,0,0,0.2);
                     }
                     .photo-1 {
-                        background-image: url('../images/photo.png');
+                        background-image: url('../images/photo1.jpg');
+                        // background-position: 70% 50%;
+                        // position: relative;
                     }
                     .photo-2 {
-                        background-image: url('../images/photo.jpg');
-                        background-position: 50% 50%;
+                        background-image: url('../images/photo2.jpg');
+                        // background-position: 50% 50%;
+                        // position: relative;
+                    }
+                    .photo-3 {
+                        background-image: url('../images/photo3.jpg');
+                        // background-position: 50% 50%;
+                        // position: relative;
+                    }
+                    .photo-4 {
+                        background-image: url('../images/photo4.jpg');
+                        // background-position: 50% 50%;
+                        // position: relative;
+                    }
+                    .photo-5 {
+                        background-image: url('../images/photo5.jpg');
+                        background-position: 70% 50%;
                         position: relative;
+                    }
+                    .photo-6 {
+                        background-image: url('../images/photo6.jpg');
+                        // background-position: 50% 50%;
+                        // position: relative;
+                    }
+                    .photo-7 {
+                        background-image: url('../images/photo7.jpg');
+                        // background-position: 50% 50%;
+                        // position: relative;
                     }
 
                     // 导航按钮
@@ -253,6 +319,7 @@ export default {
                         display: flex;
                         justify-content: center;
                         align-items: center;
+                        cursor: pointer;
 
                         .navigation-icon {
                             display: inline-block;
@@ -264,11 +331,14 @@ export default {
                         }
                     }
 
-                    // swiper组件的分液器
+                    // swiper组件的分页器
                     .swiper-pagination {
+                        position: absolute;
+                        bottom: 20px;
                         .swiper-pagination-bullet {
-                            width: 15px;
-                            height: 15px;
+                            width: 10px;
+                            height: 10px;
+                            background-color: MediumVioletRed;
                         }
                     }
 
@@ -276,6 +346,7 @@ export default {
                         margin-top: 0;
                         margin-bottom: 5px;
                     }
+
                     .content-inside-bless {
                         display: flex;
                         
@@ -307,7 +378,7 @@ export default {
                         }
 
                         .send-message {
-                            width: 60px;
+                            width: 70px;
                             height: 35px;
                             color: #a9895d;
                             background: #f7debb;
@@ -318,7 +389,6 @@ export default {
                                 opacity: 0.8;
                             }
                         }
-
 
                         > div {
                             display: flex;
@@ -343,6 +413,47 @@ export default {
                                 }
                             }
                         }
+                    }
+
+                    .close-invitation {
+                        height: 35px;
+                        width: 100%;
+                        color: #a9895d;
+                        background: #f7debb;
+                        border: none;
+                        outline: none;
+                    }
+
+                    // 当屏幕不够长时，引导滚动
+                    .scroll-guide {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 60px;
+                        background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(80, 80, 80, 1));
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 1;
+
+                        // 这是引导滚动的图标
+                        .scroll-down-icon {
+                            width: 30px;
+                            height: 30px;
+                            background-image: url('../images/scroll-down.png');
+                            background-size: cover;
+                            animation: up-and-down 1s infinite;
+                            @keyframes up-and-down {
+                                0% {
+                                    transform: translateY(-5px);
+                                } 
+                                100% {
+                                    transform: translateY(5px);
+                                } 
+                            }
+                        }
+
                     }
                 }
             }
@@ -397,7 +508,9 @@ export default {
                 transition: all 0.8s cubic-bezier(0.4, 0, 1, 1);
                 -webkit-transition: all 0.8s cubic-bezier(0.4, 0, 1, 1);
                 &.invitation-flight {
-                    opacity: 0;
+                    // opacity: 0;
+                    display: none;
+                    border: 1px solid;
                 }
             }
         }

@@ -1,17 +1,24 @@
 <template>
     <div class="wedding">
         <Editor />
+        <audio id="myaudio" src="../src/music/bgsound.mp3" controls="controls" autoplay loop="true" hidden="true"></audio>
     </div>
 </template>
 
 <script>
 import Editor from "./components/Editor.vue"
+import Wxdebug from './wx'
 
 export default {
     props: [],
     data() {
         return {
-            appId: 'wxe0e65e72672a7c5d',
+            // 飞快的香港记者的appid
+            // appId: 'wx5654d7882a1bdf03',
+            // 测试号的appid
+            appId: Wxdebug.appid,
+            // 布丁与画家的appid
+            // appId: 'wxe5c5c54c8f4ebfe9',
             timestamp: 'orgin',
             nonceStr: 'orgin',
             signature: 'orgin'
@@ -23,15 +30,16 @@ export default {
     name: 'Wedding',
     methods: {
         getWxSignature() {
-            return this.axios.get('http://127.0.0.1:5000/wx/signature?url=' + location.href.split('#')[0])
+            return this.axios.get(Wxdebug.backendUrl + '/wx/signature?url=' + location.href.split('#')[0])
         }
     },
     mounted() {
         this.getWxSignature().then(res => {
-            // eslint-disable-next-line no-console
-            console.log((res))
+            // console.log(res)
+            // console.log('net wx ready')
+
             this.$wx.config({
-                debug: true, //生产环境需要关闭debug模式
+                debug: false, //生产环境需要关闭debug模式
                 appId: this.appId, //appId通过微信服务号后台查看
                 timestamp: res.data.timestamp, //生成签名的时间戳
                 nonceStr: res.data.nonceStr, //生成签名的随机字符串
@@ -39,20 +47,44 @@ export default {
                 jsApiList: [
                     //需要调用的JS接口列表
                     "checkJsApi",
-                    "onMenuShareTimeline", //分享给好友
-                    "onMenuShareAppMessage", //分享到朋友圈 
                     "openLocation", //查看地理位置
-                    "getLocation"
+                    "updateAppMessageShareData", //分享给好友
+                    "updateTimelineShareData", //分享到朋友圈 
                 ]
             });
-            //获取定位信息
-            this.$wx.ready(function () {
-                // eslint-disable-next-line no-console
-                console.log('init')
+
+            //设置微信api
+            this.$wx.ready(() => {
+                // console.log('init');
+
+                // 分享给好友（新接口）
+                this.$wx.updateAppMessageShareData({ 
+                    title: '诚邀您出席金姝妮&秦宇杰婚礼', // 分享标题
+                    desc: '静候光临', // 分享描述
+                    link: Wxdebug.backendUrl + '/invitation', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl:  Wxdebug.backendUrl + '/static/dist/img/photo1.jpg', // 分享图标
+                    success: function () {
+                        // console.log('分享功能设置成功')
+                    }
+                });
+                // 分享到朋友圈（新接口）
+                this.$wx.updateTimelineShareData({ 
+                    title: '诚邀您出席金姝妮&秦宇杰婚礼', // 分享标题
+                    desc: '静候光临', // 分享描述
+                    link: Wxdebug.backendUrl + '/invitation', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: Wxdebug.backendUrl + '/static/dist/img/photo1.jpg', // 分享图标
+                    success: function () {
+                        // console.log('分享功能设置成功')
+                    }
+                });
+                // 自动播放背景音乐
+                document.getElementById('myaudio').play()
             });
+
+            // eslint-disable-next-line no-unused-vars
             this.$wx.error(function (res) {
-                // eslint-disable-next-line no-console
-                console.log(res)
+                // console.log('log error')
+                // console.log(res)
             });
         })
     }
