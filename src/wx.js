@@ -10,6 +10,6 @@ export default {
     // appid: 'wxe5c5c54c8f4ebfe9',
     // backendUrl: 'http://wedding.southdog.cool'
     // 秋果学堂+服务器
-    appid: 'wx65ac53e6a8e2545e',
-    backendUrl: 'http://wedding.southdog.cool'
+    appid: 'wxfb90340fd27654b8',
+    backendUrl: 'http://101.35.156.223:8080'
 }

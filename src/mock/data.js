@@ -21,43 +21,42 @@ generateInvitation(😆,💍,😊);
         duration: 0,
         visible: false
     }, {
-        name: '恋爱中',
+        name: '相知中',
         time: '',
         duration: 0,
         visible: false
     }, {
-        name: '吵架中',
+        name: '相恋中',
         time: '',
         duration: 0,
         visible: false
     }, {
-        name: '和好中',
+        name: '相好中',
         time: '',
         duration: 0,
         visible: false
     }, {
-        name: '养只猫🐈',
+        name: '打工🐈',
         time: '',
         duration: 0,
         visible: false
     }, {
-        name: '养只狗🐕',
+        name: '奋斗🐕',
         time: '',
         duration: 0,
         visible: false
     }, {
-        name: '现在结婚吧',
+        name: '一起走',
         time: '',
         visible: false
     }],
     barrages: [
-        '66666666',
+        '只要代码写得好, 妹子绝对少不了',
         '百年好合',
-        '你的邀请函真是美',
+        '你的邀请函真是好',
         '哇！好棒！',
-        '啥时候生娃',
+        '你猜我是不是个机器人',
         '哇哇哇',
-        '66666',
         '一定来！！！',
         '祝福',
         '新娘很漂亮哦',

@@ -59,7 +59,7 @@ export default {
 
                 // 分享给好友（新接口）
                 this.$wx.updateAppMessageShareData({ 
-                    title: '诚邀您出席金姝妮&秦宇杰婚礼', // 分享标题
+                    title: '诚邀您出席张珍&唐戬婚礼', // 分享标题
                     desc: '静候光临', // 分享描述
                     link: Wxdebug.backendUrl + '/invitation', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl:  Wxdebug.backendUrl + '/static/dist/img/photo1.jpg', // 分享图标
@@ -69,7 +69,7 @@ export default {
                 });
                 // 分享到朋友圈（新接口）
                 this.$wx.updateTimelineShareData({ 
-                    title: '诚邀您出席金姝妮&秦宇杰婚礼', // 分享标题
+                    title: '诚邀您出席张珍&唐戬婚礼', // 分享标题
                     desc: '静候光临', // 分享描述
                     link: Wxdebug.backendUrl + '/invitation', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: Wxdebug.backendUrl + '/static/dist/img/photo1.jpg', // 分享图标
