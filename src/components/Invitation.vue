@@ -35,8 +35,8 @@
                         <p>
                             <b>唐戬 & 张珍</b>
                         </p>
-                        <p>2020年10月5日 18:08</p>
-                        <p>地点：<b>江苏省江阴市银河国际酒店</b></p>
+                        <p>2021年10月4日 10:58</p>
+                        <p>地点：<b>河南省永城市汉宫酒店</b></p>
                         <div class="navigation-button" @click="openMap()"><i class="navigation-icon"></i>点击导航</div>
                         <div class="content-inside-bless">
                             <input
@@ -137,7 +137,7 @@ export default {
             setTimeout(() => {
                 this.$emit("onClose");
                 this.$emit("sendBarrage", null);
-            }, 660);
+            }, 1000);
         },
         // 发送弹幕
         sendBarrage() {
@@ -150,16 +150,16 @@ export default {
                 this.$refs.wishInput.blur();
                 setTimeout(() => {
                     this.$emit("sendBarrage", this.wish);
-                }, 660);
+                }, 1000);
             });
         },
         openMap() {
             // console.log('open map');
             this.$wx.openLocation({
-                latitude: 31.896669, // 纬度，浮点数，范围为90 ~ -90
-                longitude: 120.313553, // 经度，浮点数，范围为180 ~ -180。
+                latitude: 33.965952, // 纬度，浮点数，范围为90 ~ -90
+                longitude: 116.461813, // 经度，浮点数，范围为180 ~ -180。
                 name: '婚宴地点', // 位置名
-                address: '江阴市银河国际酒店', // 地址详情说明
+                address: '河南省永城市汉宫酒店', // 地址详情说明
                 scale: 15, // 地图缩放级别,整形值,范围从1~28。默认为最大
             });
         },
